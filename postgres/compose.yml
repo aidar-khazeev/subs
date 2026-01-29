@@ -1,0 +1,21 @@
+services:
+
+  sub-postgres:
+
+    image: postgres:18.1-trixie
+
+    ports:
+      - 5437:5432
+
+    environment:
+      POSTGRES_USER: ${SUB_POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${SUB_POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${SUB_POSTGRES_DB:-subscription}
+
+    healthcheck:
+      test: pg_isready -U $${POSTGRES_USER}
+      start_interval: 1s
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
