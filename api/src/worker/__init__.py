@@ -1,5 +1,4 @@
 import json
-import asyncio
 import aiokafka
 import logging
 from datetime import datetime
@@ -16,7 +15,12 @@ logger = logging.getLogger('subs-worker')
 
 
 async def run():
-    kafka_consumer = aiokafka.AIOKafkaConsumer('payment', 'refund', bootstrap_servers=kafka_settings.bootstrap_servers)
+    kafka_consumer = aiokafka.AIOKafkaConsumer(
+        'payment', 'refund',
+        bootstrap_servers=kafka_settings.bootstrap_servers,
+        enable_auto_commit=False
+    )
+
     await kafka_consumer.start()
 
     try:
@@ -54,8 +58,14 @@ async def run():
                 elif data['status'] == 'cancelled':
                     ...  # Отправить уведомление
                 else:
-                    raise RuntimeError(f'Unexpected topic: "{msg.topic}"')
+                    raise RuntimeError(f'Unexpected payment status: "{data["status"]}"')
 
+            elif msg.topic == 'refund':
+                ...
+            else:
+                raise RuntimeError(f'Unexpected topic: "{msg.topic}"')
+
+            await kafka_consumer.commit()
 
     finally:
         await kafka_consumer.stop()
