@@ -21,7 +21,7 @@ app = FastAPI(
     default_response_class=ORJSONResponse
 )
 
-app.include_router(api.v1.subs.router)
+app.include_router(api.v1.subs.router, prefix='/api/v1/subscription', tags=['Subscription'])
 
 
 admin = Admin(app, engine)

@@ -15,3 +15,6 @@ class Plan(Base):
     duration: Mapped[timedelta] = mapped_column(default=timedelta(days=30))
     amount: Mapped[Decimal] = mapped_column(default=100.0)
     currency: Mapped[str] = mapped_column(default='RUB')
+
+    def __str__(self):
+        return self.name

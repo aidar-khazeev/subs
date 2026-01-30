@@ -8,8 +8,8 @@ from services.subs import SubscriptionsService, get_subscriptions_service
 router = APIRouter()
 
 
-@router.post('/bill')
-async def bill(
+@router.post('/subscribe')
+async def subscribe(
     user_id: Annotated[UUID, Body()],
     plan_id: Annotated[UUID, Body()],
     subs_service: Annotated[SubscriptionsService, Depends(get_subscriptions_service)],

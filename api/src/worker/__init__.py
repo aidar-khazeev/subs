@@ -15,10 +15,10 @@ logger = logging.getLogger('subs-worker')
 
 
 async def run():
+    # TODO коммитить вручную?
     kafka_consumer = aiokafka.AIOKafkaConsumer(
         'payment', 'refund',
-        bootstrap_servers=kafka_settings.bootstrap_servers,
-        enable_auto_commit=False
+        bootstrap_servers=kafka_settings.bootstrap_servers
     )
 
     await kafka_consumer.start()
@@ -64,8 +64,6 @@ async def run():
                 ...
             else:
                 raise RuntimeError(f'Unexpected topic: "{msg.topic}"')
-
-            await kafka_consumer.commit()
 
     finally:
         await kafka_consumer.stop()
