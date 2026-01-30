@@ -1,10 +1,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from fastapi.requests import Request
-from fastapi.responses import ORJSONResponse, HTMLResponse
-from sqladmin import Admin, ModelView, action
+from fastapi.responses import ORJSONResponse
+from sqladmin import Admin, ModelView
 
 import tables
+import api.v1.subs
 from db.postgres import engine
 
 
@@ -14,27 +14,27 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title='Bill',
+    title='Subs',
     lifespan=lifespan,
     docs_url='/api/openapi',
     openapi_url='/api/openapi.json',
     default_response_class=ORJSONResponse
 )
+
+app.include_router(api.v1.subs.router)
+
+
 admin = Admin(app, engine)
 
 
+class PlanAdmin(ModelView, model=tables.Plan):
+    ...
+
+
 class SubscriptionAdmin(ModelView, model=tables.Subscription):
-    column_list = [tables.Subscription.id, tables.Subscription.user_id]
-
-    @action(
-        name="Some nice action",
-        label="aslkdaslkdjlkj",
-        confirmation_message="Are you sure?",
-        add_in_detail=True,
-        add_in_list=True,
-    )
-    async def approve_users(self, request: Request):
-        return HTMLResponse()
+    can_create = False
+    can_edit = False
 
 
+admin.add_view(PlanAdmin)
 admin.add_view(SubscriptionAdmin)

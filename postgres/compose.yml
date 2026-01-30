@@ -1,6 +1,6 @@
 services:
 
-  sub-postgres:
+  subs-postgres:
 
     image: postgres:18.1-trixie
 
@@ -8,9 +8,9 @@ services:
       - 5437:5432
 
     environment:
-      POSTGRES_USER: ${SUB_POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${SUB_POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${SUB_POSTGRES_DB:-subscription}
+      POSTGRES_USER: ${SUBS_POSTGRES_USER:?}
+      POSTGRES_PASSWORD: ${SUBS_POSTGRES_PASSWORD:?}
+      POSTGRES_DB: ${SUBS_POSTGRES_DB:?}
 
     healthcheck:
       test: pg_isready -U $${POSTGRES_USER}

@@ -11,7 +11,8 @@ dependencies = [
     "alembic ==1.18.0",
     "typer ==0.21.1",
     "asgi-lifespan ==2.1.0",
-    "sqladmin[full] ==0.22.0"
+    "sqladmin[full] ==0.22.0",
+    "aiokafka ==0.13.0"
 ]
 
 [dependency-groups]
