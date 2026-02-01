@@ -1,0 +1,38 @@
+services:
+
+  subs-api:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      SUBS_API_BILL_API_URL: ${SUBS_API_BILL_API_URL:?}
+      SUBS_KAFKA_BOOTSTRAP_SERVERS: ${SUBS_KAFKA_BOOTSTRAP_SERVERS:?}
+      SUBS_POSTGRES_HOST: subs-postgres
+      SUBS_POSTGRES_PORT: 5432
+      SUBS_POSTGRES_USER: ${SUBS_POSTGRES_USER:?}
+      SUBS_POSTGRES_PASSWORD: ${SUBS_POSTGRES_PASSWORD:?}
+      SUBS_POSTGRES_DB: ${SUBS_POSTGRES_DB:?}
+    depends_on:
+      subs-postgres:
+        condition: service_healthy
+    ports: [ 18007:8000 ]
+
+
+  subs-api-worker-0:
+    build: .
+    command: .venv/bin/python -m worker
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      SUBS_API_BILL_API_URL: ${SUBS_API_BILL_API_URL:?}
+      SUBS_KAFKA_BOOTSTRAP_SERVERS: ${SUBS_KAFKA_BOOTSTRAP_SERVERS:?}
+      SUBS_POSTGRES_HOST: subs-postgres
+      SUBS_POSTGRES_PORT: 5432
+      SUBS_POSTGRES_USER: ${SUBS_POSTGRES_USER:?}
+      SUBS_POSTGRES_PASSWORD: ${SUBS_POSTGRES_PASSWORD:?}
+      SUBS_POSTGRES_DB: ${SUBS_POSTGRES_DB:?}
+    depends_on:
+      subs-api:
+        condition: service_started

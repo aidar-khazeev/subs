@@ -5,20 +5,21 @@ import httpx
 
 import tables
 import db.postgres
+from settings import settings
 
 
 @dataclass(frozen=True)
-class SubscriptionsService:
-    bill_client: httpx.AsyncClient
+class BillService:
+    client: httpx.AsyncClient
 
-    async def bill(self, user_id: UUID, plan_id: UUID, return_url: str) -> str:
+    async def payment(self, user_id: UUID, plan_id: UUID, return_url: str) -> str:
         async with db.postgres.session_maker() as session:
             plan = (await session.execute(
                 select(tables.Plan)
                 .where(tables.Plan.id == plan_id)
             )).scalar_one()
 
-        response = await self.bill_client.post(
+        response = await self.client.post(
             '/api/v1/payment',
             json={
                 'user_id': str(user_id),
@@ -36,9 +37,9 @@ class SubscriptionsService:
         return response.json()['confirmation_url']
 
 
-def get_subscriptions_service():
-    return SubscriptionsService(
-        bill_client=httpx.AsyncClient(
-            base_url='http://127.0.0.1:8008'
+def get_bill_service():
+    return BillService(
+        client=httpx.AsyncClient(
+            base_url=settings.bill_api_url
         )
     )

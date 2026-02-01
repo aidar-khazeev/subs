@@ -5,6 +5,8 @@ from pydantic import Field
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file='.env.local', extra='allow', env_prefix='subs_api_')
 
+    bill_api_url: str = Field(default='127.0.0.1')
+
 
 class PostgresSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file='.env.local', extra='allow', env_prefix='subs_postgres_')

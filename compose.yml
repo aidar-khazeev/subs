@@ -1,2 +1,4 @@
 include:
   - ./postgres/compose.yml
+  - ./nginx/compose.yml
+  - ./api/compose.yml

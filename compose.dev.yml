@@ -1,0 +1,4 @@
+include:
+  - ./postgres/compose.dev.yml
+  - ./nginx/compose.dev.yml
+  - ./api/compose.dev.yml

@@ -1,0 +1,30 @@
+FROM python:3.13.11-slim
+
+COPY --from=ghcr.io/astral-sh/uv:0.9.27 /uv /bin/uv
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /opt/subs
+
+COPY pyproject.toml uv.lock ./
+
+# Не обновлять лок, не использовать кэш и не использовать dev зависимости
+RUN uv sync --locked --no-cache --no-dev
+
+COPY alembic.ini ./
+COPY ./src .
+COPY ./migrations ./migrations
+
+RUN useradd fastapi
+
+USER fastapi
+
+EXPOSE 8000
+
+CMD .venv/bin/alembic upgrade head && \
+        .venv/bin/uvicorn main:app \
+        --workers 4 \
+        --host 0.0.0.0 \
+        --port 8000 \
+        --proxy-headers
