@@ -12,7 +12,8 @@ dependencies = [
     "typer ==0.21.1",
     "asgi-lifespan ==2.1.0",
     "sqladmin[full] ==0.22.0",
-    "aiokafka ==0.13.0"
+    "aiokafka ==0.13.0",
+    "greenlet ==3.3.1"
 ]
 
 [dependency-groups]
